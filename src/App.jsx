@@ -30,7 +30,7 @@ function Atom(props) {
 
   return (
     <group {...props}>
-      {/* Base orbit ellipses */}
+      {/* Base orbits */}
       <Line points={vertices} color={[4, 1, 10]} lineWidth={1} toneMapped={false} />
       <Line
         points={vertices}
@@ -47,12 +47,12 @@ function Atom(props) {
         rotation={[0, 0, -Math.PI / 3]}
       />
 
-      {/* Electrons (each has orbit rotation & trail) */}
+      {/* Electrons */}
       <Electron rotation={[0, 0, 0]} speed={6} />
       <Electron rotation={[0, 0, Math.PI / 3]} speed={6.5} />
       <Electron rotation={[0, 0, -Math.PI / 3]} speed={7} />
 
-      {/* Glowing nucleus */}
+      {/* Nucleus */}
       <Sphere args={[0.35, 64, 64]}>
         <meshBasicMaterial color={[6, 0.5, 2]} toneMapped={false} />
       </Sphere>
@@ -60,12 +60,12 @@ function Atom(props) {
   )
 }
 
-/* 🪐 Electron with globally-moving trail */
+/* 🪐 Electron with comet-style trail (thick head → thin tail) */
 function Electron({ radius = 2.75, speed = 6, rotation = [0, 0, 0] }) {
   const electronRef = useRef()
   const orbitRef = useRef()
 
-  // Animate electron position around ellipse
+  // Electron orbit animation
   useFrame((state) => {
     const t = state.clock.getElapsedTime() * speed
     const x = Math.sin(t) * radius
@@ -73,25 +73,28 @@ function Electron({ radius = 2.75, speed = 6, rotation = [0, 0, 0] }) {
     electronRef.current.position.set(x, y, 0)
   })
 
-  // Slowly rotate each orbit plane itself for realism
+  // Subtle orbit plane rotation
   useFrame((state) => {
     orbitRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.5
   })
 
   return (
     <group ref={orbitRef} rotation={rotation}>
-      {/* Trail must use world coordinates → local={false} */}
       <Trail
         local={false}
-        width={6}
-        length={80}
-        decay={0.5}
-        color={new THREE.Color(2, 1, 10)}
-        attenuation={(t) => (1 - t) ** 2}
+        width={10} // start wide
+        length={3} // trail length
+        decay={0.05} // fade duration (~2s)
+        color={new THREE.Color(5, 1.2, 10)} // neon pink-violet
+        attenuation={(t) => Math.pow(t, 2)} // 🟢 head bold → tail thin
       >
         <mesh ref={electronRef}>
           <sphereGeometry args={[0.25]} />
-          <meshBasicMaterial color={[10, 1, 10]} toneMapped={false} />
+          <meshBasicMaterial
+            color={[10, 1, 10]}
+            toneMapped={false}
+            blending={THREE.AdditiveBlending}
+          />
         </mesh>
       </Trail>
     </group>
