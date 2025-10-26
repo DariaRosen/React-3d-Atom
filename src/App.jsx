@@ -18,7 +18,7 @@ export default function App() {
       </Float>
       <Stars saturation={0} count={400} speed={0.5} />
       <EffectComposer>
-        <Bloom mipmapBlur luminanceThreshold={0.1} radius={0.7} intensity={1.5} />
+        <Bloom mipmapBlur luminanceThreshold={0.1} radius={0.8} intensity={2} />
       </EffectComposer>
     </Canvas>
   )
@@ -63,7 +63,7 @@ function Atom(props) {
   )
 }
 
-/* 🪐 Electron with comet-style trail (thick head → thin tail) */
+/* 🪐 Electron with ultra-smooth glowing trail */
 function Electron({ radius = 2.75, speed = 6, rotation = [0, 0, 0] }) {
   const electronRef = useRef()
   const orbitRef = useRef()
@@ -85,11 +85,14 @@ function Electron({ radius = 2.75, speed = 6, rotation = [0, 0, 0] }) {
     <group ref={orbitRef} rotation={rotation}>
       <Trail
         local={false}
-        width={10} // start wide
-        length={3} // trail length
-        decay={0.05} // fade duration (~2s)
-        color={new THREE.Color(5, 1.2, 10)} // neon pink-violet
-        attenuation={(t) => Math.pow(t, 2)} // 🟢 head bold → tail thin
+        interval={0.5}                 // 🟣 Higher sampling → smoother path
+        width={10}                      // bold head
+        length={2}                      // visible trail distance
+        decay={0.08}                    // fade duration (~1.5s)
+        color={new THREE.Color(5, 2, 10)}
+        attenuation={(t) => Math.pow(t, 2.2)} // head → thin tail
+        // smoothing={1}                   // 🟣 built-in Catmull-Rom smoothing
+        // blend={THREE.AdditiveBlending}  // add glow together
       >
         <mesh ref={electronRef}>
           <sphereGeometry args={[0.25]} />
