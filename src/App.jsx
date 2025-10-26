@@ -11,7 +11,10 @@ export default function App() {
       <ambientLight intensity={0.5} />
       {/* Float makes entire atom move gently in space */}
       <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1.5}>
-        <Atom />
+        {/* 🧩 Scale entire atom smaller (0.6 = 60% size) */}
+        <group scale={0.6}>
+          <Atom />
+        </group>
       </Float>
       <Stars saturation={0} count={400} speed={0.5} />
       <EffectComposer>
