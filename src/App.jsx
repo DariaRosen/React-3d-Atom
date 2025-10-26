@@ -10,7 +10,7 @@ export default function App() {
       <color attach="background" args={['#050017']} />
       <ambientLight intensity={0.5} />
       {/* Float makes entire atom move gently in space */}
-      <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1.5}>
+      <Float speed={2.5} rotationIntensity={2} floatIntensity={3}>
         {/* 🧩 Scale entire atom smaller (0.6 = 60% size) */}
         <group scale={0.6}>
           <Atom />
